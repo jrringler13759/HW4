@@ -5,7 +5,7 @@ var questions = [
     { question: "How do you spell code?", answers: { a: "doec", b: "odec", c: "code", d: "coed"}, correctAnswer: "c"}
 ]
 
-var timer = document.getElementById("timer");
+var timerEl = document.getElementById("timer");
 var qSpace = document.getElementById("question");
 var choices = document.getElementById("choices");
 var choiceA = document.getElementById("a");
@@ -18,60 +18,78 @@ var rightWrong = document.getElementById("rightWrong");
 var secondsLeft = 75;
 
 function timer() {
-    //timer counts down from 75 
-    var timerInterval = setInterval(function() {
-        secondsLeft--;
-        timer.textContent = secondsLeft;
-    //when it = 0 , game over/highscore screen
-        if(secondsLeft === 0) {
-          clearInterval(timerInterval);
-          
-        }
-    
-      }, 120000);
-    
-} 
+  var timerInterval = setInterval(function() {
+    secondsLeft--;
+    timerEl.textContent = secondsLeft;
+
+    if(secondsLeft === 0) {
+      clearInterval(timerInterval);
+      window.location.href = "highscores.html";
+    }
+    //lose time for incorrect answers
+
+  }, 1000);
+}
 
 
 function showQuestion(qnum) {
-    //shows a question and waits for an answer to be clicked
+    //shows a question 
     
-       question[qnum];
-          qSpace.textContent = questions[qnum].question;
-          choiceA.textContent = questions[qnum].answers.a;
-          choiceB.textContent = questions[qnum].answers.b;
-          choiceC.textContent = questions[qnum].answers.c;
-          choiceD.textContent = questions[qnum].answers.d;
-          
+    question[qnum];
+        qSpace.textContent = questions[qnum].question;
+        choiceA.textContent = questions[qnum].answers.a;
+        choiceB.textContent = questions[qnum].answers.b;
+        choiceC.textContent = questions[qnum].answers.c;
+        choiceD.textContent = questions[qnum].answers.d;
+    if (qnum === null){
+        window.location.href = "highscores.html";
+    }    
 }
 
 function checkAnswer() {
     //when an answer is clicked it checks the answer
-    choices.addEventListener("click", function(event) {
+    choiceA.addEventListener("click", function(event) {
         var element = event.target;
-      
-        // If that element is a button...
         if (element.matches("choiceA") && questions.correctAnswer === "a") {
-
-        } if (element.matches("choiceB") && questions.correctAnswer === "b") {
-            
-        } if (element.matches("choiceC") && questions.correctAnswer === "c") {
-            
-        } if (element.matches("choiceD") && questions.correctAnswer === "d") {
-            
+            rightWrong.textContent = "Correct!";
         }
-    //compare to the property value from the question object
-    //print right or wrong below the questsion
-    //If correct gain points, if incorrect lose points
+    }); 
+    choiceB.addEventListener("click", function(event) {
+        var element = event.target;
+        if (element.matches("choiceB") && questions.correctAnswer === "b") {
+            rightWrong.textContent = "Correct!";
+        }
+    }); 
+    choiceC.addEventListener("click", function(event) {
+        var element = event.target;
+        if (element.matches("choiceC") && questions.correctAnswer === "c") {
+            rightWrong.textContent = "Correct!";
+        } 
+    });
+    choiceD.addEventListener("click", function(event) {
+        var element = event.target;
+        if (element.matches("choiceD") && questions.correctAnswer === "d") {
+            rightWrong.textContent = "Correct!";
+        } else{
+            rightWrong.textContent = "Incorrect";
+        }
+   
 });
+
 }
 
+function hideStart() {
+    startBtn.style.display = "none";
+}
 
 
 var i = 0;
 function start() {
+    hideStart();
+    timer();
     showQuestion(i);
-    i++
+    checkAnswer();
+    i++;
 }
 
 
