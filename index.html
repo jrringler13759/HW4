@@ -17,6 +17,9 @@
         <a class="navbar-brand" href="highscores.html">Highscores</a>
 
         <ul class="nav justify-content-end">
+            <li class = "nav-item">
+                <h5 class = "nav-item">Score:<span id = "score"></span></h5>
+            </li>
             <li class="nav-item">
               <h5 class="nav-item">Timer:<span id = "timer"></span></h5>
             </li>
@@ -25,16 +28,22 @@
     </nav>
 
     <div class = "container ">
+        <div class = "row justify-content-center" id = "quizTitle">
+            <h1>Quiztastic</h1>
+        </div>
+        <div class = "row justify-content-center" id = "directions" >
+            <h6>Answer all the questions within 75 seconds. If you get a question incorrect, 5 seconds will be deducted from your time Good luck!</h6>
+        </div>
         
         <div class = "row justify-content-center">
             <span class = "jumbotron" id = "question"></span>
         </div>
 
         <div class = "row justify-content-center" id="choices">
-            <button class="btn">A:<span id="a"></span></button>
-            <button class="btn">B:<span id="b"></span></button>
-            <button class="btn">C:<span id="c"></span></button>
-            <button class="btn">D:<span id="d"></span></button>
+            <button class="btn" id = "a"></button>
+            <button class="btn" id = "b"></button>
+            <button class="btn" id = "c"></button>
+            <button class="btn" id = "d"></button>
         </div>
 
         <div class = "row justify-content-center">
