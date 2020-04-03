@@ -39,3 +39,13 @@ p {
     margin-right: 10px;
      
 }
+
+.initialsItem {
+    list-style-position: inside;
+
+}
+
+#listOfHs {
+    padding-left:0;
+    font-size: 20px;
+}

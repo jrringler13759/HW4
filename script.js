@@ -16,135 +16,45 @@ var startBtn = document.getElementById("start");
 var rightWrong = document.getElementById("rightWrong");
 var quizTitle = document.getElementById("quizTitle");
 var instructions = document.getElementById("directions");
-var scoreBoard = document.getElementById("score");
+var mainDiv = document.getElementById("mainDiv");
+
+var highscoresInput = document.getElementById("highscoresInput");
+var submitIn = document.getElementById("submitInitials");
+var highScores = [];
 
 var i = 0;
 var secondsLeft = 75;
+var timerInterval;
 
-
-
-
-
-qSpace.style.display = "";
-choices.style.display = "";
-startBtn.style.display = "inline-grid";
-instructions.style.display = "inline-grid";
-
-
+function showInstructions () {
+  qSpace.style.display = "none";
+  choices.style.display = "none";
+  mainDiv.style.display = "inline-grid";
+  highscoresInput.style.display = "none";
+}
 
 function timer() {
-  var timerInterval = setInterval(function() {
+  timerInterval = setInterval(function() {
     secondsLeft--;
     timerEl.textContent = " " + secondsLeft;
-    if(secondsLeft === 0) {
-      clearInterval(timerInterval);
-      alert("Time is up");
-      window.location.href = "highscores.html";
+    if(secondsLeft <= 0) {
+      endGame();
     }
   }, 1000);
 }
 
-//scoreBoard.textContent = " " + score;
-
-
-
-
-
-
 function showQuestion(qnum) {
-    //shows a question 
-    choices.dataset("data-ans", questions[qnum].correctAnswer)
-    question[qnum];
-        qSpace.textContent = questions[qnum].question;
-        choiceA.textContent =  "A: " + questions[qnum].answers.a;
-        choiceB.textContent =  "B: " + questions[qnum].answers.b;
-        choiceC.textContent =  "C: " + questions[qnum].answers.c;
-        choiceD.textContent =  "D: " + questions[qnum].answers.d;
-    
-        if (qnum === 4){
-        
-        window.location.href = "highscores.html";
-    }    
-}
-
-
-
-
-function resetQ () {
-    rightWrong.textContent = "Correct!";
-    i++;
-    if (i < 3){
-    showQuestion(i);
-  }  
-}
-    //when an answer is clicked it checks the answer
-choices.addEventListener("click", function(event) {
-    var element = event.target;
-    var correct = choices.getAttribute("data-ans");
-    console.log(correct)
-        if (element.getAttribute("id") === "a" && correct === "a") {
-            resetQ();
-        } else if (element.getAttribute("id") === "b" && correct === "b") {
-            resetQ();
-        } else if (element.getAttribute("id") === "c" && correct === "c") {
-            resetQ();
-        } else if (element.getAttribute("id") === "d" && correct === "d") {
-            resetQ();
-        } else{
-            rightWrong.textContent = "Incorrect";
-            i++;
-            showQuestion(i);
-            secondsLeft -= 5;
-        }      
-});
-
-
-function hideShow() {
-    qSpace.style.display = "inline-grid";
-    startBtn.style.display = "none";
-    instructions.style.display = "none";
-    choices.style.display = "";
-    quizTitle.style.display = "none";
-}
-
-function start() {
-    hideShow();
-    timer();
-    showQuestion(i);   
-  
-}
-
-startBtn.addEventListener("click", start);
-
-
-
-
-
-
-
-// JavaScript for High Scores Page
-
-var submitIn = document.getElementById("submitInitials");
-var highscoresInput = document.getElementById("highscoresInput");
-var goBack = document.getElementById("goBcack");
-var clearHs = document.getElementById("clearHs");
-var initials = document.getElementById("initials");
-var listOfHs = document.getElementById("listOfHs");
-
-var highScores = [];
-
-getHs();
-
-
-
-function listHs () {
-  for (var i = 0; i < highScores.length; i++){
-    var hs = highScores[i];
-    var li = document.createElement("li");
-    li.textContent = hs;
-    li.setAttribute("data-index", i);
-    listOfHs.appendChild(li);
-  }
+  if (qnum < 4){
+  choices.setAttribute("data-ans", questions[qnum].correctAnswer)
+  question[qnum];
+      qSpace.textContent = questions[qnum].question;
+      choiceA.textContent =  "A: " + questions[qnum].answers.a;
+      choiceB.textContent =  "B: " + questions[qnum].answers.b;
+      choiceC.textContent =  "C: " + questions[qnum].answers.c;
+      choiceD.textContent =  "D: " + questions[qnum].answers.d;
+  } else {
+    endGame();
+  }         
 }
 
 function getHs () {
@@ -152,45 +62,75 @@ function getHs () {
   if (storedHs !== null){
     highScores = storedHs;
   }
-  listHs();
+}
+
+function resetQ () {
+  i++;
+  showQuestion(i); 
 }
 
 function storeHs () {
   localStorage.setItem("highScores", JSON.stringify(highScores));
 }
 
-submitIn.addEventListener("click", function(event){
+function startGame() {
+  qSpace.style.display = "inline-grid";
+  choices.style.display = "";
+  startBtn.style.display = "none";
+  instructions.style.display = "none";
+  quizTitle.style.display = "none";
+}
 
-  var initialsInput = highScoresInput.value.trim();
+function endGame() {
+  highscoresInput.style.display = "inline-grid";
+  qSpace.style.display = "none";
+  choices.style.display = "none";
+  rightWrong.textContent = "";
+  clearInterval(timerInterval);
+}
 
+function start() {
+  startGame();
+  timer();
+  showQuestion(i);   
+
+}
+
+choices.addEventListener("click", function(event) {
+  var element = event.target;
+  var correct = choices.getAttribute("data-ans");
+  if (element.getAttribute("id") === correct) {
+    rightWrong.textContent = "Correct!";
+  } else {
+      rightWrong.textContent = "Incorrect";
+      secondsLeft -= 5;
+  } 
+  resetQ();        
+});
+
+startBtn.addEventListener("click", start);
+
+submitIn.addEventListener("click", function(){
+  var initials = document.getElementById("initials");
+  var initialsInput = initials.value.trim();
   if (initialsInput === "") {
     return;
   }
-  highScores.push(initialsInput);
-  highScoresInput.value = "";
-
+  var gameInfo = {
+    score: secondsLeft,
+    initials: initialsInput
+  }
+  highScores.push(gameInfo);
+  initialsInput.value = "";
+  
   storeHs();
-  listHs();
+  location.href = "highscores.html";
+ 
 });
 
+getHs();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+showInstructions();
 
 
 
